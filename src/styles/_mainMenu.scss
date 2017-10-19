@@ -1,0 +1,13 @@
+#main-menu {
+    background-color: $header-background;
+    color: $menu-item-color;
+    a {
+        color: $menu-item-color;
+        &:hover {
+            color: darken($menu-item-color, 30%);
+        }
+        &.active {
+            color: $green;
+        }
+    }
+}
