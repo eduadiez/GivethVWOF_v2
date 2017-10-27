@@ -4,7 +4,7 @@ import firebase from 'firebase';
 import GoBackButton from '../GoBackButton'
 import currentWeekNumber from 'current-week-number'
 
-const database = firebase.database();
+
 class MediaCapture_iOS extends Component {
 
     constructor(props) {
@@ -90,7 +90,7 @@ class MediaCapture_iOS extends Component {
             
             storageRef.getDownloadURL().then((url) => {
 
-                database.ref("GVWOF/" + this.state.week).push({
+                firebase.database().ref("GVWOF/" + this.state.week).push({
                     src: url,
                     name: name,
                     type: _type,

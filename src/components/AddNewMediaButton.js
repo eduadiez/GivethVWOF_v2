@@ -5,7 +5,7 @@ class AddNewMediaButton extends Component {
 
     render() {
         return (
-            <Link to={"/new/"+this.props.week}>
+            <Link to={"/new/"+this.props.week + "/"+ this.props.wall}>
                 <button type="button" className="btn btn-circle btn-success">
                     <div className="center-block">
                         <svg className="svgIcon" width="48px" height="48px" viewBox="0 0 48 48">

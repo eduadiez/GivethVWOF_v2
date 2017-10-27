@@ -12,42 +12,45 @@ class MediaCard extends Component {
             title: props.title,
             timestamp: props.timestamp,
             description: props.description,
+            hideTimer: null,
+            _overlay: null,
             date: new Date(props.timestamp).toString()
         }
     }
 
+    onClick = e => {
+        console.log("on click")
+    }
+
+    onMouseMove = e => {
+        this.triggerMouseMove();
+    }
+
+    triggerMouseMove = () => {
+        this._overlay.style.opacity = "1";
+
+        if (this.hideTimer)
+            clearTimeout(this.hideTimer);
+        this.hideTimer = setTimeout(() => {
+
+            if (this._overlay) {
+                this._overlay.style.opacity = "0";
+            }
+        }, 1000);
+    }
+
+
     render() {
 
-        var mediaContent = null;
-        if (this.state.type === "video") {
-            mediaContent = <video controls autoPlay muted loop src={this.state.src} className="card-img-top" />;
-        } else {
-            mediaContent = <img src={this.state.src} className="card-img-top" alt="" />
-        }
-
         return (
-            <div className="card">
-                {mediaContent}
-                <div className="card-body">
-                    <h1 className="card-title">{this.props.title}</h1>
-                    <p>
-                        {this.props.description}
-                    </p>
-                    <div className="card-text">
-
-                        <p>
-                            {this.state.date}
-                        </p>
-
-                        <h3>Link</h3>
-                        <a href={'https://eduadiez.github.io/GivethVWOF/view/' + this.props.week + "/" + this.props.id}>{'https://eduadiez.github.io/GivethVWOF/view/' + this.props.week + "/" + this.props.id}</a>
-                        <p />
-                        <h3>IPFS</h3>
-                        <a href={this.state.ipfs}>{this.state.ipfs}</a>
-                        <p />
-                        <h3>Firebase</h3>
-                        <a href={this.props.src}>{this.props.src}</a>
+            <div className="card overview-card">
+                <div className="VideoWrapper" onMouseMove={this.onMouseMove}>
+                    <div className="overlayContainer" ref={ref => this._overlay = ref} onMouseMove={this.onMouseMove} >
+                        <div>
+                            <h4 className="overlayTitle">{this.props.title}</h4>
+                        </div>
                     </div>
+                    <video controls autoPlay muted loop src={this.state.src} className="card-img .embed-responsive-item" />
                 </div>
             </div>
         )

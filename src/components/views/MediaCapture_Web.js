@@ -4,10 +4,9 @@ import firebase from 'firebase';
 import RecordRTC from 'recordrtc';
 import GoBackButton from '../GoBackButton'
 import currentWeekNumber from 'current-week-number'
+import { DropdownButton, MenuItem } from 'react-bootstrap'
 
 
-
-const database = firebase.database();
 
 function hasGetUserMedia() {
     return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
@@ -20,6 +19,7 @@ class MediaCapture_Web extends Component {
         super(props);
 
         var _week;
+        var _wall = "Giveth_Daily";
         var date = new Date();
         var month = date.getMonth() + 1;
         var year = date.getFullYear();
@@ -29,6 +29,10 @@ class MediaCapture_Web extends Component {
         } else {
             _week = currentWeekNumber() + "_" + month + "_" + year;
         }
+
+        if (props.match.params.wall != null) {
+            _wall = props.match.params.wall;
+        } 
 
         this.state = {
             file: null,
@@ -52,7 +56,8 @@ class MediaCapture_Web extends Component {
             mixedStream: null,
             title: "",
             description: "",
-            week: _week
+            week: _week,
+            wall: _wall
         };
 
         this.uploadFile = this.uploadFile.bind(this);
@@ -155,9 +160,9 @@ class MediaCapture_Web extends Component {
         } else {
             this.uploadFile();
             return;
-            
+
         }
-     
+
         const ipfs = new window.IpfsApi('35.188.240.194', '443', { protocol: 'https' })
         const buffer = Buffer.from(reader.result)
         ipfs.add(buffer)
@@ -192,7 +197,7 @@ class MediaCapture_Web extends Component {
         var description = this.state.description;
 
 
-        var storageRef = firebase.storage().ref('/GVWOF/' + this.state.week + '/' + title);
+        var storageRef = firebase.storage().ref('/GVWOF_v2/' + this.state.week + '/' + title);
         var self = this;
 
         this.setState({ upload: false, uploading: true }, function () {
@@ -206,13 +211,14 @@ class MediaCapture_Web extends Component {
 
                 storageRef.getDownloadURL().then((url) => {
 
-                    database.ref("GVWOF/" + this.state.week).push({
+                    firebase.database().ref("GVWOF_v2/").push({
                         src: url,
-                        name: title,
+                        title: title,
                         description: description,
                         type: _type,
                         timestamp: timestamp,
                         week: this.state.week,
+                        wall: this.state.wall,
                         ipfs: 'http://35.188.240.194:8080/ipfs/' + self.state.ipfsId
                     }, function () {
 
@@ -248,7 +254,7 @@ class MediaCapture_Web extends Component {
         var description = this.state.description;
         var timestamp = Date.now();
 
-        var storageRef = firebase.storage().ref('/GVWOF/' + this.state.week + '/' + title);
+        var storageRef = firebase.storage().ref('/GVWOF_v2/' + this.state.week + '/' + title);
 
         this.setState({ upload: false, uploading: true });
 
@@ -262,12 +268,14 @@ class MediaCapture_Web extends Component {
 
             storageRef.getDownloadURL().then((url) => {
 
-                database.ref("GVWOF/" + this.state.week).push({
+                firebase.database().ref("GVWOF_v2/").push({
                     src: url,
-                    name: title,
+                    title: title,
                     description: description,
                     type: _type,
                     timestamp: timestamp,
+                    week: this.state.week,
+                    wall: this.state.wall,
                     ipfs: 'http://35.188.240.194:8080/ipfs/' + self.state.ipfsId
 
                 }, function () {
@@ -529,6 +537,25 @@ class MediaCapture_Web extends Component {
                                 <label className="form-check-label">
                                     <input className="form-check-input" type="checkbox" id="screenSharingCheckBox" value="ScreenSharing" onChange={this.handleCheckBoxChange} /> Screen sharing
                                 </label>
+                            </div>
+                            <div className="form-check form-check-inline">
+
+                                <div className="form-check form-check-inline">
+                                    <label className="form-check-label">
+                                        <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" onChange={(e) => {e.target.checked ? this.setState({wall:"Giveth_Daily"}):null}} checked={(this.state.wall === "Giveth_Daily")} /> Giveth Daily
+                                </label>
+                                </div>
+                                <div className="form-check form-check-inline">
+                                    <label className="form-check-label">
+                                        <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" onChange={(e) => {e.target.checked ? this.setState({wall:"Reward_DAO"}):null}} checked={(this.state.wall === "Reward_DAO")} /> Reward DAO
+                                    </label>
+                                </div>
+                                <div className="form-check form-check-inline">
+                                    <label className="form-check-label">
+                                        <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" onChange={(e) => {e.target.checked ? this.setState({wall:"Regular_Rewards"}):null}} checked={(this.state.wall === "Regular_Rewards")} /> Regular Rewards
+                                     </label>
+                                </div>
+
                             </div>
                         </div>
 
