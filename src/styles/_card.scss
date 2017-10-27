@@ -12,10 +12,13 @@
           transition: opacity 0.5s;
           opacity: 0;
           display:block;
-          color: white;
           background: linear-gradient(rgba(80, 99, 119, 0.5), rgba(28, 59, 68, 0.9));
           padding: 10px;
           font-size: 10px;
+
+          .overlayTitle{
+            color:white
+          }
       }
     video{
       width: 100%;
