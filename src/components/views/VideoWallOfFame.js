@@ -183,6 +183,8 @@ class VideoWallOfFame extends Component {
 
     const mediadata = data.val();
 
+    console.log(mediadata)
+
     if (!mediadata)
       return
 
@@ -229,13 +231,9 @@ class VideoWallOfFame extends Component {
 
   }
 
-
   loadItems() {
-
-
     if (this.state.wall === "") {
-      var database = firebase.database().ref("GVWOF_v2/").orderByKey().limitToFirst(6).endAt(this.state.referenceToOldestKey);
-      database.on('value', this.gotData, (err) => { console.log(err) });
+      firebase.database().ref("GVWOF_v2/").orderByKey().limitToLast(6).endAt(this.state.referenceToOldestKey).on('value', this.gotData.bind(this), (err) => { console.log(err) });
     }
   }
 
